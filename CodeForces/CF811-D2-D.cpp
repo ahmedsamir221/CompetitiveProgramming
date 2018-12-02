@@ -1,7 +1,11 @@
 /*
-first get all paths using floyed then try all possible permutation of houses you will visit by dp with mask
-convert to integer to avoid WA  because perstion of double
+first we will assume the button with normal direction
+because we start with cell(1,1) there must be at least two cell to check the button safely
+so we get path to the end using DFS then we use this path and at any moment the input deffer
+from our path we will swap the direction and continue from current cell again until
+reach to our end
 */
+
 
 
 
@@ -27,35 +31,41 @@ typedef long long  ll;
 typedef pair<ll, ll>pii;
 //typedef complex<double> point;
 //template<typename T>T gcd(T x, T y) { if(y == 0)return x; else return gcd(y, x%y); }
-typedef bitset<13> mask;
-//int x[8]={1,0,0,-1,-1,-1,1,1};
-//int y[8]={0,1,-1,0,-1,1,-1,1};
+//typedef bitset<21> mask;
+int x[8]={1,0,0,-1,-1,-1,1,1};
+int y[8]={0,1,-1,0,-1,1,-1,1};
 //const double PI = acos(-1.0);
 //const double EPS = 1e-9;
 //typedef complex<double> point;
-ll t,n,m,x,y,b[15],p;
-double c;
-ll a[55][55],d[15],mem[15][(1<<14)+5];
-
-ll dp(int s,mask m)
- {
-     if(m.count()==0)return -a[b[s]][0];
-     ll&ret=mem[s][m.to_ulong()];
-     if(~ret)return ret;
-      ret=-1e18;
-      forr(i,1,p)
-      {
-          if(m[i])
-          {
-             mask k=m;
-             k[i]=0;
-             ret=max(dp(i,k)+d[i]-a[b[s]][b[i]],ret);
-             ret=max(dp(s,k),ret);
-          }
-      }
-      return ret;
- }
-
+int n,m,vis[110][110],ex,ey,xx,yy;
+pair<int,int>pr[110][110];
+char a[110][110],u='U',d='D',l='L',r='R';
+vector<pair<int,int>>path;
+bool valid (int i,int j)
+{
+    if(i<1||i>n||j<1||j>m)return 0;
+    return 1;
+}
+void dfs(int i,int j)
+{
+   vis[i][j]=1;
+   forr(k,0,3)
+   {
+     int u=x[k]+i;
+     int v=y[k]+j;
+     if(vis[u][v]==0&&valid(u,v)&&a[u][v]!='*')
+     {
+        pr[u][v]={i,j};
+        dfs(u,v);
+     }
+   }
+}
+void bulid(int i=ex,int j=ey)
+{
+    if(i==1&&j==1)return;
+    bulid(pr[i][j].F,pr[i][j].S);
+    path.push_back({i,j});
+}
 int main()
 {
 
@@ -65,44 +75,73 @@ int main()
 //    char input[15];
 //    scanf("%s", &input);  array of char
 //  gets(c+1);  array of char
-//input;
-cin>>t;
-while(t--)
+input;
+cin>>n>>m;
+forr(i,1,n)
+forr(j,1,m)
 {
-   cin>>n>>m;
-   forr(i,0, n) forr(j,0, n)a[i][j]=1e18;
-   forr(i,0,n)a[i][i]=0.0;
-   forr(i,1,m)
-   {
-       cin>>x>>y>>c;
-       a[x][y]=min((ll)round(c * 100.0),a[x][y]);
-       a[y][x]=a[x][y];
-   }
+cin>>a[i][j];
+if(a[i][j]=='F')
+    ex=i,ey=j;
+}
 
-  forr(k,0, n) forr(i,0, n) forr(j,0, n)
-   a[i][j] = min(a[i][j], a[i][k]+a[k][j]);
-
-  cin>>p;
-  forr(i,1,p)
-  {
-      cin>>b[i]>>c;
-      d[i]=(ll)round(c * 100.0);
-  }
-  ll ans=0;
-  memset(mem,-1,sizeof mem);
-  mask g=0;
-  forr(i,1,p)
-   g[i]=1;
-  ans=max(ans,dp(0,g));
-  if(ans>0.0)
-  {
-    double w=ans/100+(ans%100)*1.0/100;
-    printf("Daniel can save $%.2f\n",w);
-  }
-  else
-    printf("Don't leave the house\n");
-
-
+dfs(1,1);
+bulid(ex,ey);
+int curx=1,cury=1;
+forr(i,0,(int)path.size()-1)
+{
+if(path[i].F>curx)
+{
+    cout<<d<<endl;
+    fflush(stdout);
+    cin>>xx>>yy;
+    if(path[i]!=make_pair(xx,yy))
+      {
+          swap(d,u);
+          i--;
+      }
+    else
+        curx++;
+}
+else if(path[i].F<curx)
+{
+    cout<<u<<endl;
+    fflush(stdout);
+    cin>>xx>>yy;
+    if(path[i]!=make_pair(xx,yy))
+      {
+          swap(d,u);
+          i--;
+      }
+    else
+        curx--;
+}
+else if(path[i].S>cury)
+{
+    cout<<r<<endl;
+    fflush(stdout);
+    cin>>xx>>yy;
+    if(path[i]!=make_pair(xx,yy))
+      {
+          swap(r,l);
+          i--;
+      }
+    else
+        cury++;
+}
+else
+{
+    cout<<l<<endl;
+    fflush(stdout);
+    cin>>xx>>yy;
+    if(path[i]!=make_pair(xx,yy))
+      {
+          swap(l,r);
+          i--;
+      }
+    else
+        cury--;
+}
 }
 return 0;
 }
