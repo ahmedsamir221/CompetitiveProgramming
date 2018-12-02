@@ -1,8 +1,13 @@
 /*
-first get all paths using floyed then try all possible permutation of houses you will visit by dp with mask
-convert to integer to avoid WA  because perstion of double
+because the material will construct a tree rooted from node 1
+we will store each parent node and the value to covert from each node to its children
+then we will start from leaf
+if(supply>needs) we will add the extra material to parent
+else we take our needs from parent even its have not extra we will take it with negative value from parent supples
+then we will erase this leaf
+we will do that until just remains the root only
+then we will decide our answer with the compare root supply with root needs
 */
-
 
 
 #include<stdio.h>
@@ -27,35 +32,16 @@ typedef long long  ll;
 typedef pair<ll, ll>pii;
 //typedef complex<double> point;
 //template<typename T>T gcd(T x, T y) { if(y == 0)return x; else return gcd(y, x%y); }
-typedef bitset<13> mask;
+//typedef bitset<21> mask;
 //int x[8]={1,0,0,-1,-1,-1,1,1};
 //int y[8]={0,1,-1,0,-1,1,-1,1};
 //const double PI = acos(-1.0);
 //const double EPS = 1e-9;
 //typedef complex<double> point;
-ll t,n,m,x,y,b[15],p;
-double c;
-ll a[55][55],d[15],mem[15][(1<<14)+5];
-
-ll dp(int s,mask m)
- {
-     if(m.count()==0)return -a[b[s]][0];
-     ll&ret=mem[s][m.to_ulong()];
-     if(~ret)return ret;
-      ret=-1e18;
-      forr(i,1,p)
-      {
-          if(m[i])
-          {
-             mask k=m;
-             k[i]=0;
-             ret=max(dp(i,k)+d[i]-a[b[s]][b[i]],ret);
-             ret=max(dp(s,k),ret);
-          }
-      }
-      return ret;
- }
-
+ll n,a[100010],pr[100010],c[100010],x,y;
+map<pair<ll,ll>,ll>m;
+set<pair<ll,ll>>s;
+double b[100010];
 int main()
 {
 
@@ -65,44 +51,43 @@ int main()
 //    char input[15];
 //    scanf("%s", &input);  array of char
 //  gets(c+1);  array of char
-//input;
-cin>>t;
-while(t--)
+input;
+cin>>n;
+forr(i,1,n)cin>>b[i];
+forr(i,1,n)cin>>a[i];
+
+forr(i,2,n)
 {
-   cin>>n>>m;
-   forr(i,0, n) forr(j,0, n)a[i][j]=1e18;
-   forr(i,0,n)a[i][i]=0.0;
-   forr(i,1,m)
-   {
-       cin>>x>>y>>c;
-       a[x][y]=min((ll)round(c * 100.0),a[x][y]);
-       a[y][x]=a[x][y];
-   }
-
-  forr(k,0, n) forr(i,0, n) forr(j,0, n)
-   a[i][j] = min(a[i][j], a[i][k]+a[k][j]);
-
-  cin>>p;
-  forr(i,1,p)
-  {
-      cin>>b[i]>>c;
-      d[i]=(ll)round(c * 100.0);
-  }
-  ll ans=0;
-  memset(mem,-1,sizeof mem);
-  mask g=0;
-  forr(i,1,p)
-   g[i]=1;
-  ans=max(ans,dp(0,g));
-  if(ans>0.0)
-  {
-    double w=ans/100+(ans%100)*1.0/100;
-    printf("Daniel can save $%.2f\n",w);
-  }
-  else
-    printf("Don't leave the house\n");
-
-
+    cin>>x>>y;
+    m[{x,i}]=y;
+    c[x]++;
+    pr[i]=x;
 }
+forr(i,1,n)
+    s.insert({c[i],i});
+while((int)s.size()>1)
+{
+    auto k=*s.begin();
+    ll val=k.F;
+    ll u=k.S;
+    if(a[u]<=b[u])
+    {
+        b[pr[u]]+=b[u]-a[u];
+    }
+    else
+    {
+        b[pr[u]]-=(a[u]-b[u])*m[{pr[u],u}];
+    }
+    auto it=s.lower_bound({c[pr[u]],pr[u]});
+    s.erase(it);
+    s.erase(s.begin());
+    c[pr[u]]--;
+    s.insert({c[pr[u]],pr[u]});
+}
+auto p=*s.begin();
+if(b[p.S]>=a[p.S])
+    cout<<"YES";
+else
+    cout<<"NO";
 return 0;
 }
