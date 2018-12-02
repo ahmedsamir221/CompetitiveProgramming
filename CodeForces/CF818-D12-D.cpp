@@ -1,10 +1,10 @@
 /*
-first we will assume the button with normal direction
-because we start with cell(1,1) there must be at least two cell to check the button safely
-so we get path to the end using DFS then we use this path and at any moment the input deffer
-from our path we will swap the direction and continue from current cell again until
-reach to our end
-*/
+first we will the number of each color then will insert them in set
+then will begin from back and decrease the number of color when it appear and every time the number of any color at any
+time less than the number of alice color we will erase it from the set
+and at end if still any number in the set it will be the answer
+else there will be no answer
+    */
 
 
 
@@ -32,40 +32,13 @@ typedef pair<ll, ll>pii;
 //typedef complex<double> point;
 //template<typename T>T gcd(T x, T y) { if(y == 0)return x; else return gcd(y, x%y); }
 //typedef bitset<21> mask;
-int x[8]={1,0,0,-1,-1,-1,1,1};
-int y[8]={0,1,-1,0,-1,1,-1,1};
+//int x[8]={1,0,0,-1,-1,-1,1,1};
+//int y[8]={0,1,-1,0,-1,1,-1,1};
 //const double PI = acos(-1.0);
 //const double EPS = 1e-9;
 //typedef complex<double> point;
-int n,m,vis[110][110],ex,ey,xx,yy;
-pair<int,int>pr[110][110];
-char a[110][110],u='U',d='D',l='L',r='R';
-vector<pair<int,int>>path;
-bool valid (int i,int j)
-{
-    if(i<1||i>n||j<1||j>m)return 0;
-    return 1;
-}
-void dfs(int i,int j)
-{
-   vis[i][j]=1;
-   forr(k,0,3)
-   {
-     int u=x[k]+i;
-     int v=y[k]+j;
-     if(vis[u][v]==0&&valid(u,v)&&a[u][v]!='*')
-     {
-        pr[u][v]={i,j};
-        dfs(u,v);
-     }
-   }
-}
-void bulid(int i=ex,int j=ey)
-{
-    if(i==1&&j==1)return;
-    bulid(pr[i][j].F,pr[i][j].S);
-    path.push_back({i,j});
-}
+int n,k,a[100010],c[1000010];
+set<pair<int,int>>s;
 int main()
 {
 
@@ -76,72 +49,55 @@ int main()
 //    scanf("%s", &input);  array of char
 //  gets(c+1);  array of char
 input;
-cin>>n>>m;
+cin>>n>>k;
 forr(i,1,n)
-forr(j,1,m)
 {
-cin>>a[i][j];
-if(a[i][j]=='F')
-    ex=i,ey=j;
+    cin>>a[i];
+    c[a[i]]++;
 }
 
-dfs(1,1);
-bulid(ex,ey);
-int curx=1,cury=1;
-forr(i,0,(int)path.size()-1)
+forr(i,1,1000000)
 {
-if(path[i].F>curx)
-{
-    cout<<d<<endl;
-    fflush(stdout);
-    cin>>xx>>yy;
-    if(path[i]!=make_pair(xx,yy))
-      {
-          swap(d,u);
-          i--;
-      }
-    else
-        curx++;
+    if(i==k)continue;
+    if(c[i])s.insert({c[i],i});
 }
-else if(path[i].F<curx)
+if(c[k])
+for(int i=n;i>0;i--)
 {
-    cout<<u<<endl;
-    fflush(stdout);
-    cin>>xx>>yy;
-    if(path[i]!=make_pair(xx,yy))
-      {
-          swap(d,u);
-          i--;
-      }
-    else
-        curx--;
+    if(a[i]==k)
+    {
+        while((int)s.size())
+        {
+            auto p=*s.begin();
+            if(p.F<c[k])
+            {
+                s.erase(s.begin());
+                c[p.S]=0;
+            }
+            else break;
+        }
+    }
+    if(a[i]==k)
+    {
+        c[k]--;
+        if(c[k]==0)break;
+        else
+         continue;
+    }
+    if(c[a[i]]==0)continue;
+    auto it=s.lower_bound({c[a[i]],a[i]});
+    c[a[i]]--;
+    s.erase(it);
+    if(c[a[i]])
+    s.insert({c[a[i]],a[i]});
 }
-else if(path[i].S>cury)
+
+if((int)s.size())
 {
-    cout<<r<<endl;
-    fflush(stdout);
-    cin>>xx>>yy;
-    if(path[i]!=make_pair(xx,yy))
-      {
-          swap(r,l);
-          i--;
-      }
-    else
-        cury++;
+    auto p=*s.begin();
+    cout<<p.S;
 }
 else
-{
-    cout<<l<<endl;
-    fflush(stdout);
-    cin>>xx>>yy;
-    if(path[i]!=make_pair(xx,yy))
-      {
-          swap(l,r);
-          i--;
-      }
-    else
-        cury--;
-}
-}
+    cout<<"-1";
 return 0;
 }
