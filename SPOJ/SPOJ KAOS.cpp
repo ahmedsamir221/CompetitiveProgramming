@@ -1,6 +1,7 @@
 /*
-  we will sort the words in lexicographically then give to each word number and sort them
-  after reverse them then by segment tree we will get the number of crossed lines
+  we will sort the words in lexicographically order then give to each word a number and sort them
+  after reverse them and give them the same numbers and will be line between the same number in the two column
+  by segment tree we will get the number of crossed lines
   and will be the answer;
 */
 #include<stdio.h>
