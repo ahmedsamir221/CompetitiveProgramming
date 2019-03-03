@@ -1,4 +1,14 @@
 /*
+   the problem is we have a cube with size NX * NY * NZ ,each point(x,y,z) in that cube represented initial by a green plant,
+   we have a laser light that change the the color of green plant to red plant and vice versa .
+   we have three types of modified query :
+   0 -> expose the laser light to all point with coordinate x  which i <= x <= j;
+   1 -> expose the laser light to all point with coordinate y  which i <= y <= j;
+   2 -> expose the laser light to all point with coordinate z  which i <= z <= j;
+   
+   then will gave us a sub cube of original cube and the answer  is the number of red plants in that sub cube 
+   
+  
    we will use segment tree for every dimension to get the number of red plants in certain segment in that dimension
    to check if the the plant is red it must be red in only on dimension or in all three dimension other
    will be green .
