@@ -1,0 +1,78 @@
+//http://codeforces.com/blog/entry/13036
+#include <iostream>
+#include<vector>
+#include<algorithm>
+//#include <cmath>
+//#include <complex>
+#include<queue>
+#include<map>
+#include <string>
+#include<bits/stdc++.h>
+//#define pi 3.141592654
+#define forr(i,a,b) for(int i=a;i<=b;i++)
+#define F first
+#define S second
+#define input ios_base::sync_with_stdio(0);cin.tie(0);
+//#define x real()
+//#define y imag()
+using namespace std;
+typedef pair<double,double>pdd;
+typedef long long  ll;
+typedef pair<ll, ll>pii;
+//typedef complex<double> point;
+//template<typename T>T gcd(T x, T y) { if(y == 0)return x; else return gcd(y, x%y); }
+//typedef bitset<30> mask;
+//int x[8]={1,0,0,-1,-1,-1,1,1};
+//int y[8]={0,1,-1,0,-1,1,-1,1};
+ll n,m,k,p,a[1004][1004],sumr[1004],sumc[1004],remr,remc,ansr[1000004],ansc[1000004];
+priority_queue<ll>c,r;
+int main()
+{
+
+//cout<<Pow((ll)1000000,(ll)110);
+//freopen("input.txt","r",stdin);
+//freopen("output.txt","w",stdout);
+//    char input[15];
+//    scanf("%s", &input);  array of char
+//  gets(c+1);  array of char
+input;
+cin>>n>>m>>k>>p;
+forr(i,1,n)
+forr(j,1,m)
+cin>>a[i][j],sumr[i]+=a[i][j];
+
+forr(i,1,n)r.push(sumr[i]);
+
+forr(j,1,m)
+forr(i,1,n)
+sumc[j]+=a[i][j];
+
+
+forr(j,1,m)c.push(sumc[j]);
+
+
+ll ans=-1e18;
+
+forr(i,1,k)
+{
+    ll g=r.top();
+    r.pop();
+    ansr[i]=ansr[i-1]+g;
+    r.push(g-m*p);
+}
+
+forr(i,1,k)
+{
+    ll g=c.top();
+    c.pop();
+    ansc[i]=ansc[i-1]+g;
+    c.push(g-n*p);
+}
+
+for(ll i=0;i<=k;i++)
+   ans=max(ans,ansr[i]+ansc[k-i]-i*(k-i)*p);
+
+
+cout<<ans;
+return 0;
+}
