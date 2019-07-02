@@ -1,5 +1,5 @@
 /*
-    our step = total distance of the rood / (number of trees - 1)
+    our step = total distance of the road / (number of trees - 1)
     so we can start from the first point with our step
 */
 #include<queue>
