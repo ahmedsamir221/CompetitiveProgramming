@@ -1,7 +1,6 @@
 /*
    we need to know the number of bits that equal 1 in a , b , and c .
    then try all possible combination  using the normal binary addition .
-   complexsty --> 30^4 * 2
 */
 #pragma GCC optimize("O3")
 #include<queue>
